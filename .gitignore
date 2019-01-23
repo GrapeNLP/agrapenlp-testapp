@@ -1,0 +1,13 @@
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file
+/local.properties
+
+# IntelliJ IDEA metadata
+*.iml
+.idea/
+
+# MacOS metadata
+.DS_Store

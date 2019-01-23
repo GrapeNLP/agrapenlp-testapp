@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">agrapenlp-testapp</string>
+    <string name="edit_message">Write here a sentence</string>
+    <string name="button_list_files">List Files</string>
+    <string name="button_load_lib">Load Lib</string>
+    <string name="button_load_tagger">Load Tagger</string>
+    <string name="button_tag">Tag</string>
+    <string name="button_hello">Hello</string>
+    <string name="text_view">Sentence analysis will appear here</string>
+</resources>
