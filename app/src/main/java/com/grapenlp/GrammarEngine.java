@@ -38,7 +38,6 @@ public class GrammarEngine
             return "Already loaded";
         else
         {
-            System.loadLibrary("grapenlp");
             System.loadLibrary("jgrapenlp");
             libraryLoadedFlag = true;
             return "Loaded";
