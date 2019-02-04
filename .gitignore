@@ -2,6 +2,10 @@
 .gradle/
 build/
 
+# Signed APKs or bundles
+app/debug/
+app/release/
+
 # Local configuration file
 /local.properties
 
