@@ -21,6 +21,11 @@
 
 package com.grapenlp.testapp;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -35,12 +40,18 @@ import com.grapenlp.Segment;
 import com.grapenlp.core.uaui_simple_segment_array_x_weight_array;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    public static final File DATA_FOLDER=new File("/sdcard/grapenlpdata");
+    public static final File DATA_FOLDER=new File(Environment.getExternalStorageDirectory().getPath(), "grapenlpdata");
     public static final File GRAMMAR_FILE=new File(DATA_FOLDER, "grammar.fst2");
-    public static final File DICO_FILE=new File(DATA_FOLDER, "delaf_norm.bin");
+    public static final File DICO_BIN_FILE =new File(DATA_FOLDER, "delaf_norm.bin");
+    public static final File DICO_INF_FILE =new File(DATA_FOLDER, "delaf_norm.inf");
 
+    public static final int LIST_FILES = 1;
+    public static final int LOAD_TAGGER = 2;
+
+    private View v;
     private EditText et;
     private TextView tv;
     private GrammarEngine grammarEngine=null;
@@ -64,11 +75,40 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private boolean getReadExternalStoragePermission(int taskCode)
+    {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+            return true;
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, taskCode);
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        {
+            switch (requestCode)
+            {
+                case LIST_FILES:
+                {
+                    listFiles(null);
+                    break;
+                }
+                case LOAD_TAGGER:
+                    loadTagger(null);
+            }
+        }
+        else tv.setText("Permission for reading the external storage is needed for loading the grammar and dictionary files, which you should have placed inside a folder " + DATA_FOLDER.getName() + " at the root of the device storage");
+    }
+
     public void listFiles(View view)
     {
+        if (!getReadExternalStoragePermission(LIST_FILES))
+            return;
         if (!DATA_FOLDER.exists())
         {
-            tv.setText("Data folder " + DATA_FOLDER.getAbsolutePath() + " does not exist");
+            tv.setText("Data folder " + DATA_FOLDER.getAbsolutePath() + " does not exist; please create it and put the grammar and dictionary files there");
             return;
         }
         if (!DATA_FOLDER.isDirectory())
@@ -79,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         File[] dataFiles = DATA_FOLDER.listFiles();
         if (dataFiles.length == 0)
         {
-            tv.setText("Data folder " + DATA_FOLDER.getAbsolutePath() + " is empty");
+            tv.setText("Data folder " + DATA_FOLDER.getAbsolutePath() + " is empty; please put the grammar and dictionary files inside");
             return;
         }
         StringBuilder files = new StringBuilder("Files in ");
@@ -105,23 +145,61 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void loadTagger(View view)
+    private boolean checkLibraryIsLoaded()
     {
         if (!GrammarEngine.isLibraryLoaded())
         {
             tv.setText("You must first load the native library");
-            return;
+            return false;
         }
+        return true;
+    }
+
+    private void showMissingFiles(ArrayList<File> missingFiles)
+    {
+        StringBuilder message = new StringBuilder("Missing data files:\n");
+        for (File f : missingFiles)
+        {
+            message.append(f.getAbsolutePath());
+            message.append("\n");
+        }
+        message.append("Please copy them to your Android device in those paths. You may check that the files are present by pressing button LIST FILES");
+        tv.setText(message);
+    }
+
+    private boolean checkDataFiles()
+    {
+        ArrayList<File> missingFiles = new ArrayList<File>();
+        if (!GRAMMAR_FILE.exists())
+            missingFiles.add(GRAMMAR_FILE);
+        if (!DICO_BIN_FILE.exists())
+            missingFiles.add(DICO_BIN_FILE);
+        if (!DICO_INF_FILE.exists())
+            missingFiles.add(DICO_INF_FILE);
+        if (!missingFiles.isEmpty())
+        {
+            showMissingFiles(missingFiles);
+            return false;
+        }
+        return true;
+    }
+
+    public void loadTagger(View view)
+    {
+        if (!(checkLibraryIsLoaded() &&
+              getReadExternalStoragePermission(LOAD_TAGGER) &&
+              checkDataFiles()))
+            return;
         try
         {
             if (grammarEngine == null)
             {
-                grammarEngine = new GrammarEngine(GRAMMAR_FILE.getAbsolutePath(), DICO_FILE.getAbsolutePath());
+                grammarEngine = new GrammarEngine(GRAMMAR_FILE.getAbsolutePath(), DICO_BIN_FILE.getAbsolutePath());
                 tv.setText("Tagger loaded");
             }
             else
             {
-                grammarEngine.resetModels(GRAMMAR_FILE.getAbsolutePath(), DICO_FILE.getAbsolutePath());
+                grammarEngine.resetModels(GRAMMAR_FILE.getAbsolutePath(), DICO_BIN_FILE.getAbsolutePath());
                 tv.setText("Tagger reloaded");
             }
         }

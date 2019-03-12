@@ -1,0 +1,30 @@
+agrapenlp-testapp (1.4.0) stable; urgency=medium
+
+  * Added request for READ_EXTERNAL_STORAGE permission in runtime to support Android versions above Lollipop
+
+ -- Javier Sastre <javier.sastre@telefonica.net>  Tue, 12 Mar 2019 12:40:14 +0100
+
+agrapenlp-testapp (1.3.0) stable; urgency=medium
+
+  * Recompiled libjgrapenlp.so without debug information (all ABIs)
+
+ -- Javier Sastre <javier.sastre@telefonica.net>  Mon, 4 Feb 2019 18:44:39 +0100
+
+agrapenlp-testapp (1.2.0) stable; urgency=medium
+
+  * Usage of a single native library libjgrapenlp (libgrape is already included in libjgrapenlp)
+  * Added versions of the native library for all Android ABIs
+
+ -- Javier Sastre <javier.sastre@telefonica.net>  Mon, 28 Jan 2019 17:30:38 +0100
+
+agrapenlp-testapp (1.1.0) stable; urgency=medium
+
+  * Added x86 version of native libraries
+
+ -- Javier Sastre <javier.sastre@telefonica.net>  Mon, 28 Jan 2019 09:37:57 +0100
+
+agrapenlp-testapp (1.0.0) stable; urgency=medium
+
+  * First working version
+
+ -- Javier Sastre <javier.sastre@telefonica.net>  Wed, 23 Jan 2019 16:13:06 +0100
