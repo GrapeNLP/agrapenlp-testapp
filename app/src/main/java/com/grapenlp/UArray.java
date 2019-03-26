@@ -19,6 +19,10 @@
  *
  */
 
+/*
+ *  @author Javier Sastre
+ */
+
 package com.grapenlp;
 
 import com.grapenlp.core.SWIGTYPE_p_unsigned_char;

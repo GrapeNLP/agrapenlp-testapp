@@ -1,3 +1,9 @@
+agrapenlp-testapp (1.5.0) stable; urgency=medium
+
+  * Adapted to grapenlp-core version 2.8.0 which adds the possibility of passing a map of context variables to condition the sentence interpretations (e.g. disambiguation based on the context of the conversation)
+
+ -- Javier Sastre <javier.sastre@telefonica.net>  Tue, 26 Mar 2019 11:07:54 +0100
+
 agrapenlp-testapp (1.4.0) stable; urgency=medium
 
   * Added request for READ_EXTERNAL_STORAGE permission in runtime to support Android versions above Lollipop

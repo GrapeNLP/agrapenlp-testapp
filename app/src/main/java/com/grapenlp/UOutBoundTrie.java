@@ -19,6 +19,10 @@
  *
  */
 
+/*
+ *  @author Javier Sastre
+ */
+
 package com.grapenlp;
 
 import com.grapenlp.core.u_array;

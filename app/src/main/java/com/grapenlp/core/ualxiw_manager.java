@@ -39,12 +39,20 @@ public class ualxiw_manager {
     this(jgrapenlpJNI.new_ualxiw_manager(grammar_type_.swigValue(), grammar_path_name, dico_path_name), true);
   }
 
+  public u_context_key_value_hasher get_context_key_value_hasher() {
+    return new u_context_key_value_hasher(jgrapenlpJNI.ualxiw_manager_get_context_key_value_hasher(swigCPtr, this), false);
+  }
+
   public uaui_simple_segment_array_x_weight_array get_simplified_weighted_output() {
     return new uaui_simple_segment_array_x_weight_array(jgrapenlpJNI.ualxiw_manager_get_simplified_weighted_output(swigCPtr, this), false);
   }
 
   public void process(SWIGTYPE_p_unsigned_short input_begin, SWIGTYPE_p_unsigned_short input_end, rtno_parser_type the_rtno_parser_type, boolean trie_strings, boolean no_output, assoc_container_impl_choice the_execution_state_set_impl_choice, assoc_container_impl_choice the_output_set_impl_choice) {
-    jgrapenlpJNI.ualxiw_manager_process(swigCPtr, this, SWIGTYPE_p_unsigned_short.getCPtr(input_begin), SWIGTYPE_p_unsigned_short.getCPtr(input_end), the_rtno_parser_type.swigValue(), trie_strings, no_output, the_execution_state_set_impl_choice.swigValue(), the_output_set_impl_choice.swigValue());
+    jgrapenlpJNI.ualxiw_manager_process__SWIG_0(swigCPtr, this, SWIGTYPE_p_unsigned_short.getCPtr(input_begin), SWIGTYPE_p_unsigned_short.getCPtr(input_end), the_rtno_parser_type.swigValue(), trie_strings, no_output, the_execution_state_set_impl_choice.swigValue(), the_output_set_impl_choice.swigValue());
+  }
+
+  public void process(SWIGTYPE_p_unsigned_short input_begin, SWIGTYPE_p_unsigned_short input_end, u_context ctx, rtno_parser_type the_rtno_parser_type, boolean trie_strings, boolean no_output, assoc_container_impl_choice the_execution_state_set_impl_choice, assoc_container_impl_choice the_output_set_impl_choice) {
+    jgrapenlpJNI.ualxiw_manager_process__SWIG_1(swigCPtr, this, SWIGTYPE_p_unsigned_short.getCPtr(input_begin), SWIGTYPE_p_unsigned_short.getCPtr(input_end), u_context.getCPtr(ctx), ctx, the_rtno_parser_type.swigValue(), trie_strings, no_output, the_execution_state_set_impl_choice.swigValue(), the_output_set_impl_choice.swigValue());
   }
 
 }

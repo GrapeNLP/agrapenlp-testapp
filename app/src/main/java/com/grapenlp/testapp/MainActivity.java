@@ -41,6 +41,7 @@ import com.grapenlp.core.uaui_simple_segment_array_x_weight_array;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class MainActivity extends AppCompatActivity {
     public static final File DATA_FOLDER=new File(Environment.getExternalStorageDirectory().getPath(), "grapenlpdata");
@@ -51,23 +52,33 @@ public class MainActivity extends AppCompatActivity {
     public static final int LIST_FILES = 1;
     public static final int LOAD_TAGGER = 2;
 
-    private View v;
-    private EditText et;
-    private TextView tv;
+    private EditText sentenceBox;
+    private EditText keyBoxes[];
+    private EditText valueBoxes[];
+    private TextView sentenceTagsBox;
     private GrammarEngine grammarEngine=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        et = findViewById(R.id.editText);
-        tv = findViewById(R.id.textView);
-
-        et.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+        sentenceBox = findViewById(R.id.sentence);
+        sentenceTagsBox = findViewById(R.id.sentenceTags);
+        keyBoxes = new EditText[4];
+        valueBoxes = new EditText[4];
+        keyBoxes[0] = findViewById(R.id.contextKey1);
+        keyBoxes[1] = findViewById(R.id.contextKey2);
+        keyBoxes[2] = findViewById(R.id.contextKey3);
+        keyBoxes[3] = findViewById(R.id.contextKey4);
+        valueBoxes[0] = findViewById(R.id.contextValue1);
+        valueBoxes[1] = findViewById(R.id.contextValue2);
+        valueBoxes[2] = findViewById(R.id.contextValue3);
+        valueBoxes[3] = findViewById(R.id.contextValue4);
+        sentenceBox.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    tv.setText(et.getText().toString());
+                    sentenceTagsBox.setText(sentenceBox.getText().toString());
                     return true;
                 }
                 return false;
@@ -99,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                     loadTagger(null);
             }
         }
-        else tv.setText("Permission for reading the external storage is needed for loading the grammar and dictionary files, which you should have placed inside a folder " + DATA_FOLDER.getName() + " at the root of the device storage");
+        else sentenceTagsBox.setText("Permission for reading the external storage is needed for loading the grammar and dictionary files, which you should have placed inside a folder " + DATA_FOLDER.getName() + " at the root of the device storage");
     }
 
     public void listFiles(View view)
@@ -108,18 +119,18 @@ public class MainActivity extends AppCompatActivity {
             return;
         if (!DATA_FOLDER.exists())
         {
-            tv.setText("Data folder " + DATA_FOLDER.getAbsolutePath() + " does not exist; please create it and put the grammar and dictionary files there");
+            sentenceTagsBox.setText("Data folder " + DATA_FOLDER.getAbsolutePath() + " does not exist; please create it and put the grammar and dictionary files there");
             return;
         }
         if (!DATA_FOLDER.isDirectory())
         {
-            tv.setText("Data folder " + DATA_FOLDER.getAbsolutePath() + " is not a directory");
+            sentenceTagsBox.setText("Data folder " + DATA_FOLDER.getAbsolutePath() + " is not a directory");
             return;
         }
         File[] dataFiles = DATA_FOLDER.listFiles();
         if (dataFiles.length == 0)
         {
-            tv.setText("Data folder " + DATA_FOLDER.getAbsolutePath() + " is empty; please put the grammar and dictionary files inside");
+            sentenceTagsBox.setText("Data folder " + DATA_FOLDER.getAbsolutePath() + " is empty; please put the grammar and dictionary files inside");
             return;
         }
         StringBuilder files = new StringBuilder("Files in ");
@@ -130,18 +141,18 @@ public class MainActivity extends AppCompatActivity {
             files.append('\n');
             files.append(file.getName());
         }
-        tv.setText(files.toString());
+        sentenceTagsBox.setText(files.toString());
     }
 
     public void loadLib(View view)
     {
         try
         {
-            tv.setText(GrammarEngine.loadLib());
+            sentenceTagsBox.setText(GrammarEngine.loadLib());
         }
         catch (RuntimeException e)
         {
-            tv.setText(e.getMessage());
+            sentenceTagsBox.setText(e.getMessage());
         }
     }
 
@@ -149,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
     {
         if (!GrammarEngine.isLibraryLoaded())
         {
-            tv.setText("You must first load the native library");
+            sentenceTagsBox.setText("You must first load the native library");
             return false;
         }
         return true;
@@ -164,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
             message.append("\n");
         }
         message.append("Please copy them to your Android device in those paths. You may check that the files are present by pressing button LIST FILES");
-        tv.setText(message);
+        sentenceTagsBox.setText(message);
     }
 
     private boolean checkDataFiles()
@@ -195,17 +206,17 @@ public class MainActivity extends AppCompatActivity {
             if (grammarEngine == null)
             {
                 grammarEngine = new GrammarEngine(GRAMMAR_FILE.getAbsolutePath(), DICO_BIN_FILE.getAbsolutePath());
-                tv.setText("Tagger loaded");
+                sentenceTagsBox.setText("Tagger loaded");
             }
             else
             {
                 grammarEngine.resetModels(GRAMMAR_FILE.getAbsolutePath(), DICO_BIN_FILE.getAbsolutePath());
-                tv.setText("Tagger reloaded");
+                sentenceTagsBox.setText("Tagger reloaded");
             }
         }
         catch (RuntimeException e)
         {
-            tv.setText(e.getMessage());
+            sentenceTagsBox.setText(e.getMessage());
         }
     }
 
@@ -236,19 +247,27 @@ public class MainActivity extends AppCompatActivity {
     {
         if (grammarEngine == null)
         {
-            tv.setText("You must first load the tagger");
+            sentenceTagsBox.setText("You must first load the tagger");
             return;
         }
         try
         {
-            String sentence = et.getText().toString();
-            uaui_simple_segment_array_x_weight_array nativeResult = grammarEngine.tag(et.getText().toString());
+            String sentence = sentenceBox.getText().toString();
+            TreeMap<String, String> context = new TreeMap<String, String>();
+            for (int i = 0; i < keyBoxes.length; ++i)
+            {
+                String key = keyBoxes[i].getText().toString();
+                String value = valueBoxes[i].getText().toString();
+                if (!key.isEmpty() && !value.isEmpty())
+                    context.put(key, value);
+            }
+            uaui_simple_segment_array_x_weight_array nativeResult = grammarEngine.tag(sentence, context);
             String result = serializeResult(sentence, nativeResult);
-            tv.setText(result);
+            sentenceTagsBox.setText(result);
         }
         catch (RuntimeException e)
         {
-            tv.setText(e.getMessage());
+            sentenceTagsBox.setText(e.getMessage());
         }
     }
 }

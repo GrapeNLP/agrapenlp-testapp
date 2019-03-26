@@ -24,6 +24,9 @@ public class jgrapenlpJNI {
   public final static native long u_array_get_bytes(long jarg1, u_array jarg1_);
   public final static native void u_array_set_bytes(long jarg1, u_array jarg1_, long jarg2);
   public final static native int u_array_get_elem_at(long jarg1, u_array jarg1_, long jarg2);
+  public final static native long new_u_context(long jarg1, u_context_key_value_hasher jarg1_);
+  public final static native void delete_u_context(long jarg1);
+  public final static native void u_context_ua_set(long jarg1, u_context jarg1_, long jarg2, long jarg3, long jarg4, long jarg5);
   public final static native long u_trie_string_size(long jarg1, u_trie_string jarg1_);
   public final static native long u_trie_string_to_array(long jarg1, u_trie_string jarg1_, long jarg2, u_array jarg2_);
   public final static native int u_trie_string_back(long jarg1, u_trie_string jarg1_);
@@ -86,8 +89,10 @@ public class jgrapenlpJNI {
   public final static native long uaui_simple_segment_array_x_weight_array_get_elem_at(long jarg1, uaui_simple_segment_array_x_weight_array jarg1_, long jarg2);
   public final static native long new_ualxiw_manager(int jarg1, String jarg2, String jarg3);
   public final static native void delete_ualxiw_manager(long jarg1);
+  public final static native long ualxiw_manager_get_context_key_value_hasher(long jarg1, ualxiw_manager jarg1_);
   public final static native long ualxiw_manager_get_simplified_weighted_output(long jarg1, ualxiw_manager jarg1_);
-  public final static native void ualxiw_manager_process(long jarg1, ualxiw_manager jarg1_, long jarg2, long jarg3, int jarg4, boolean jarg5, boolean jarg6, int jarg7, int jarg8);
+  public final static native void ualxiw_manager_process__SWIG_0(long jarg1, ualxiw_manager jarg1_, long jarg2, long jarg3, int jarg4, boolean jarg5, boolean jarg6, int jarg7, int jarg8);
+  public final static native void ualxiw_manager_process__SWIG_1(long jarg1, ualxiw_manager jarg1_, long jarg2, long jarg3, long jarg4, u_context jarg4_, int jarg5, boolean jarg6, boolean jarg7, int jarg8, int jarg9);
   public final static native long base_u_out_bound_name_string_SWIGUpcast(long jarg1);
   public final static native long base_u_out_bound_trie_SWIGUpcast(long jarg1);
   public final static native long u_out_bound_name_string_SWIGUpcast(long jarg1);

@@ -7,4 +7,7 @@
     <string name="button_tag">Tag</string>
     <string name="button_hello">Hello</string>
     <string name="text_view">Sentence analysis will appear here</string>
+    <string name="context_key_header">Context Key</string>
+    <string name="context_value_header">Context Value</string>
+    <string name="input_sentence">Input Sentence</string>
 </resources>
